@@ -1,4 +1,4 @@
-import { ErrorRequestHandler } from "express";
+import { NextFunction, Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
 import { verifyJWT } from "../utils/jwt";
 
@@ -8,7 +8,11 @@ declare module "express-serve-static-core" {
   }
 }
 
-const authenticationMiddleware: ErrorRequestHandler = (err, req, res, next) => {
+const authenticationMiddleware = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   const authHeader = req.headers.authorization;
 
   if (!authHeader || !authHeader.startsWith("Bearer ")) {
@@ -18,6 +22,7 @@ const authenticationMiddleware: ErrorRequestHandler = (err, req, res, next) => {
   }
 
   const token = authHeader.split(" ")[1];
+  console.log(token);
 
   try {
     req.user = verifyJWT(token);
