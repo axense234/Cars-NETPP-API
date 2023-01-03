@@ -23,7 +23,7 @@ const authenticationMiddleware: ErrorRequestHandler = (err, req, res, next) => {
     req.user = verifyJWT(token);
     next();
   } catch (error: any) {
-    console.log(error.message || "Probably an expired jwt.");
+    return res.status(StatusCodes.UNAUTHORIZED).json({ msg: error.message });
   }
 };
 
