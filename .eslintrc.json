@@ -9,17 +9,22 @@
   "parser": "@typescript-eslint/parser",
   "root": true,
   "rules": {
+    "consistent-return": "off",
     "arrow-body-style": "off",
-    "no-console": "off",
+
+    "no-console": "warn",
+    "no-param-reassign": "off",
+    "no-shadow": "off",
+
     "node/no-unsupported-features/es-syntax": "off",
+    "node/no-missing-import": "off",
+
     "import/no-unresolved": "off",
     "import/extensions": "off",
     "import/first": "off",
-    "node/no-missing-import": "off",
     "import/prefer-default-export": "off",
+
     "@typescript-eslint/no-unused-vars": "off",
-    "consistent-return": "off",
-    "@typescript-eslint/no-explicit-any": "off",
-    "no-shadow": "off"
+    "@typescript-eslint/no-explicit-any": "off"
   }
 }

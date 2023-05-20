@@ -60,16 +60,22 @@ const updateOwnerByUID = async (req: Request, res: Response) => {
       .json({ msg: "Please provide a owner UID!", owner: {} });
   }
 
+  const foundOwner = await Owner.findUnique({ where: { owner_uid: ownerUID } });
+
+  if (!foundOwner) {
+    return res
+      .status(StatusCodes.NOT_FOUND)
+      .json({ msg: `Could not find owner with uid:${ownerUID}!`, owner: {} });
+  }
+
   const updatedOwner = await Owner.update({
     where: { owner_uid: ownerUID },
     data: { ...ownerBody },
   });
 
-  console.log(updatedOwner);
-
   if (!updatedOwner) {
-    return res.status(StatusCodes.NOT_FOUND).json({
-      msg: `Could not find owner with UID:${ownerUID} in order to update it!`,
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+      msg: `Could not update owner with uid:${ownerUID}!`,
       owner: {},
     });
   }
@@ -90,23 +96,29 @@ const deleteOwnerByUID = async (req: Request, res: Response) => {
       .json({ msg: "Please provide a owner UID!", owner: {} });
   }
 
-  const deletedOwner = await Owner.delete({ where: { owner_uid: ownerUID } });
-
-  if (!deletedOwner) {
+  const foundOwner = await Owner.findUnique({ where: { owner_uid: ownerUID } });
+  if (!foundOwner) {
     return res
       .status(StatusCodes.NOT_FOUND)
       .json({
-        msg: `Could not find owner with UID:${ownerUID} in order to delete it!`,
+        msg: `Could not find any owners with the id: ${ownerUID}.`,
         owner: {},
       });
   }
 
-  return res
-    .status(StatusCodes.OK)
-    .json({
-      msg: `Successfully deleted owner with UID:${ownerUID}`,
-      owner: deletedOwner,
+  const deletedOwner = await Owner.delete({ where: { owner_uid: ownerUID } });
+
+  if (!deletedOwner) {
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+      msg: `Something went wrong, please try again later.`,
+      owner: {},
     });
+  }
+
+  return res.status(StatusCodes.OK).json({
+    msg: `Successfully deleted owner with UID:${ownerUID}`,
+    owner: deletedOwner,
+  });
 };
 
 // EXPORTS

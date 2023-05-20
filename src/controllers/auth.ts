@@ -1,8 +1,11 @@
 import { Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
+import dotenv from "dotenv";
 import { comparePasswords, encryptPassword } from "../utils/bcrypt";
 import { createJWT } from "../utils/jwt";
 import { Owner } from "../utils/prismaClient";
+
+dotenv.config();
 
 // CREATE OWNER/SIGN UP OWNER
 const createOwner = async (req: Request, res: Response) => {
@@ -62,5 +65,31 @@ const loginOwner = async (req: Request, res: Response) => {
   });
 };
 
+// SWAGGER AUTHORIZATION
+const swgAuthorization = async (req: Request, res: Response) => {
+  const { username, password } = req.body;
+  if (!username || !password) {
+    return res
+      .status(StatusCodes.BAD_REQUEST)
+      .json({ msg: "Please provide both username and password." });
+  }
+
+  if (username !== process.env.SWAGGER_AUTH_USERNAME) {
+    return res
+      .status(StatusCodes.UNAUTHORIZED)
+      .json({ msg: "Usernames do not match." });
+  }
+
+  if (password !== process.env.SWAGGER_AUTH_PASSWORD) {
+    return res
+      .status(StatusCodes.UNAUTHORIZED)
+      .json({ msg: "Passwords do not match." });
+  }
+
+  const token = createJWT(username, password);
+
+  return res.status(StatusCodes.OK).json({ token });
+};
+
 // EXPORTS
-export { createOwner, loginOwner };
+export { createOwner, loginOwner, swgAuthorization };

@@ -6,6 +6,8 @@ require("express-async-errors");
 import * as dotenv from "dotenv";
 
 // Routers and Middleware
+import swgUIExpress from "swagger-ui-express";
+
 import morgan from "morgan";
 import errorHandlerMiddleware from "./middleware/errorHandler";
 import notFoundMiddleware from "./middleware/notFound";
@@ -13,6 +15,7 @@ import notFoundMiddleware from "./middleware/notFound";
 import carsRouter from "./routers/cars";
 import ownersRouter from "./routers/owners";
 import authRouter from "./routers/auth";
+import swaggerDocs from "./utils/swagger";
 
 // Dotenv configuration
 dotenv.config();
@@ -32,6 +35,7 @@ app.get("/", (req: Request, res: Response) => {
 });
 
 app.use("/", [carsRouter, ownersRouter, authRouter]);
+app.use("/api/1.0.0/docs", swgUIExpress.serve, swgUIExpress.setup(swaggerDocs));
 app.use(errorHandlerMiddleware);
 app.use(notFoundMiddleware);
 

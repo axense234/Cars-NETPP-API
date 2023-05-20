@@ -32,8 +32,6 @@ const getCarByUID = async (req: Request, res: Response) => {
 
   const foundCar = await Car.findUnique({ where: { car_uid: carUID } });
 
-  console.log(foundCar);
-
   if (!foundCar) {
     return res
       .status(StatusCodes.NOT_FOUND)
@@ -51,7 +49,6 @@ const createCar = async (req: Request, res: Response) => {
   const carBody = req.body;
 
   const createdCar = await Car.create({ data: { ...carBody } });
-  console.log(carBody, createdCar);
 
   if (!createdCar) {
     return res.status(StatusCodes.BAD_REQUEST).json({
@@ -75,6 +72,15 @@ const updateCar = async (req: Request, res: Response) => {
     return res
       .status(StatusCodes.BAD_REQUEST)
       .json({ msg: "Please enter a carUID!", car: {} });
+  }
+
+  const foundCar = await Car.findUnique({ where: { car_uid: carUID } });
+
+  if (!foundCar) {
+    return res.status(StatusCodes.NOT_FOUND).json({
+      msg: `Could not find a car with the uid: ${carUID}!`,
+      owner: {},
+    });
   }
 
   const updatedCar = await Car.update({
@@ -104,13 +110,19 @@ const deleteCar = async (req: Request, res: Response) => {
       .json({ msg: "Please enter a carUID!", car: {} });
   }
 
+  const foundCar = await Car.findUnique({ where: { car_uid: carUID } });
+
+  if (!foundCar) {
+    return res.status(StatusCodes.NOT_FOUND).json({
+      msg: `Could not find any cars with the id provided(${carUID})!`,
+      car: {},
+    });
+  }
   const deletedCar = await Car.delete({ where: { car_uid: carUID } });
 
-  console.log(deletedCar);
-
   if (!deletedCar) {
-    return res.status(StatusCodes.NOT_FOUND).json({
-      msg: `Car with UID:${carUID} could not be found and deleted!`,
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+      msg: `Could not delete car.`,
       car: {},
     });
   }
