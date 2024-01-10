@@ -10,44 +10,46 @@ A node, express, typescript, postgresql, prisma api project made for practicing/
 
 ### Dependencies
 
-- check package.json for details
-- you might also want your own postgresql database
-- also have git installed on your platform
+- Git installed on your machine
+- Docker installed on your machine(optional)
+- A Postgres DB(cloud, local or container)
+- Check package.json for other dependencies
 
 ### Installing
 
-- first clone the repo
+- Install using git clone then migrate to your db using npx prisma migrate
 
 ```
 git clone https://github.com/axense234/Cars-NETPP-API.git
-```
-
-- then install the required packages
-
-```
 cd Users-PSQL-API
 npm install
 ```
 
-- migrate prisma to your dev postgresql db:
-
-```
-npx prisma migrate dev
-```
-
 - rename **.env.sample** to **.env** and put your own environment variables respectively:
-  - **DATABASE_URL** = the url of your pg db
-  - **SECRET_JWT_KEY** = your jwt secret key(complex string)
-  - **PORT** = the port you want the api to run on
+  - **PGUSER** = your postgres db user
+  - **PGPASSWORD** = your postgres db user password
+  - **PGHOST** = the host of your postgres db
+  - **PGPORT** = the port which the server will listen on
+  - **PGDATABASE** = the database you want to connect to
   - **SWAGGER_AUTH_USERNAME** = your own swagger username for authorization purposes
   - **SWAGGER_AUTH_PASSWORD** = your own swagger password for authorization purposes
+  - **SECRET_JWT_KEY** = your jwt secret key(complex string)
+  - **PORT** = the port you want the api to run on
+  - **DATABASE_URL** = the url of your postgres db(composed of other postgres env vars)
 
 ### Executing program
 
-- test the api with nodemon
+- Test the api through using nodemon
 
 ```
 npm test
+```
+
+- Test the api through docker-compose
+
+```
+docker build -t cars-netpp-api .
+docker compose up
 ```
 
 ## Authors

@@ -1,12 +1,12 @@
 {
   "compilerOptions": {
-    "sourceMap": true,
+    "sourceMap": false,
     "outDir": "dist",
-    "strict": true,
+    "strict": false,
     "lib": ["ESNext"],
     "esModuleInterop": true,
     "module": "NodeNext",
     "moduleResolution": "NodeNext"
   },
-  "include": ["src/**/*"]
+  "include": ["src/**/*", ],
 }

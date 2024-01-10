@@ -1,0 +1,43 @@
+version: "3.8"
+services:
+  server:
+    image: cars-netpp-api:latest
+    ports:
+      - "${PORT}:${PORT}"
+    depends_on:
+      postgres-db:
+        condition: service_healthy
+    command: sh -c 'npx prisma migrate dev && npx prisma generate && npm start'
+    environment:
+      - PORT=${PORT}
+      - SWAGGER_AUTH_USERNAME=${SWAGGER_AUTH_USERNAME}
+      - SWAGGER_AUTH_PASSWORD=${SWAGGER_AUTH_PASSWORD}
+      - SECRET_JWT_KEY=${SECRET_JWT_KEY}
+      - DATABASE_URL=${DATABASE_URL}
+    healthcheck:
+      test: ["CMD-SHELL", "curl http://localhost:${PORT} || exit 1"]
+
+  postgres-db:
+    image: postgres:latest
+    restart: always
+    ports:
+      - "${PGPORT}:${PGPORT}"
+    environment:
+      - POSTGRES_USER=${PGUSER}
+      - POSTGRES_PASSWORD=${PGPASSWORD}
+      - POSTGRES_DB=${PGDATABASE}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${PGUSER}"]
+      interval: 25s
+      retries: 3
+
+  adminer:
+    image: adminer:latest
+    restart: always
+    ports:
+      - "8080:8080"
+
+volumes:
+  postgres_data:

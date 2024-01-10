@@ -1,0 +1,10 @@
+**/.git
+**/.gitignore
+**/.dockeringore
+**/Dockerfile
+.env
+.env.sample
+LICENSE.md
+README.md
+.eslintrc.json
+node_modules
